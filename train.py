@@ -9,6 +9,7 @@ from src.model import GPT, GPTConfig
 from src.trainer import Trainer, TrainerConfig
 from src.utils import Dataset
 import torch
+import torch.nn as nn
 import numpy as np
 from src.spikingjelly.clock_driven import functional
 from src.binidx import MMapIndexedDataset
@@ -40,16 +41,16 @@ model_type = 'RWKV'
 # ===> batch_size must be divisible by B_GROUP_FORWARD and B_GROUP_BACKWARD in model.py
 # For example, if your batch_size = 20, you can set B_GROUP_FORWARD = 4, B_GROUP_BACKWARD = 2
 # If you see "CUDA out of memory", reduce it. Use GPU-Z to find the highest value for your VRAM.
-batch_size = 12
+batch_size = 1
 
 ### Step 4: set learning rate, training mini-epochs #######################################################
 
 lr_init = 6e-4
 lr_final = 1e-5
 # the mini-epoch is very short and of fixed length (ctx_len * epoch_length_fixed tokens)
-n_epoch = 1000
+n_epoch = 1
 # 0 = never, 1 = every mini-epoch, 2 = every two mini-epochs, etc.
-epoch_save_frequency = 10
+epoch_save_frequency = 1
 epoch_save_path = 'your_path'
 
 epoch_length_fixed = 10000
@@ -57,7 +58,7 @@ epoch_length_fixed = 10000
 ########################################################################################################
 
 import src.utils
-src.utils.set_seed(42) # remember to change seed if you load a model
+src.utils.set_seed(123) # remember to change seed if you load a model
 
 np.set_printoptions(precision=4, suppress=True, linewidth=200)
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
@@ -90,13 +91,18 @@ train_dataset = Dataset(open(
 # Train model
 ########################################################################################################
 if __name__ == '__main__':
+    pretrained_model_vocab_size = 77
 
-    model = GPT(GPTConfig(train_dataset.vocab_size, train_dataset.ctx_len, model_type=model_type,
-                          n_layer=n_layer, n_embd=n_embd)).cuda()
-
+    model = GPT(GPTConfig(pretrained_model_vocab_size, train_dataset.ctx_len, model_type=model_type,
+                          n_layer=n_layer, n_embd=n_embd))
+    pretrained_model_path = '../drive/MyDrive/BookCorpus-SpikeGPT.pth'
     # # load a trained model. remember to change random seed
-#     m2 = torch.load('medium/trained-30L-768E-936.pth',map_location=torch.device('cpu'))
-#     model.load_state_dict(m2)
+    m2 = torch.load(pretrained_model_path,map_location=torch.device('cpu'))
+    model.load_state_dict(m2)
+    model.emb = nn.Embedding(train_dataset.vocab_size,n_embd)
+    model.head = nn.Linear(n_embd, train_dataset.vocab_size, bias=False)
+    model = model.cuda()
+
     valid_dataset = None
     test_dataset = None
     print('model', model_type, 'epoch', n_epoch, 'batchsz', batch_size, 'betas',

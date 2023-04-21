@@ -70,16 +70,17 @@ model_type = 'RWKV' # 'RWKV' or 'RWKV-ffnPre'
 
 # context = 'A'
 #context = "\nHow to cook rice?"
-context = 'They tuned, discussed for a moment, then struck up a lively jig. Everyone joined in, turning the courtyard into an even more chaotic scene, people now dancing in circles, swinging and spinning in circles, everyone making up their own dance steps. I felt my feet tapping, my body wanting to move. Aside from writing, I ’ve always loved '
+#context = 'They tuned, discussed for a moment, then struck up a lively jig. Everyone joined in, turning the courtyard into an even more chaotic scene, people now dancing in circles, swinging and spinning in circles, everyone making up their own dance steps. I felt my feet tapping, my body wanting to move. Aside from writing, I ’ve always loved '
 #context = "\nWho are you?\nI am the AI.\nWho are you?\nI am Jack.\nWho are you?\nI am a woman.\nWho are you?\n"
-#context = "In the "
+#context = "deer, forest\nfish, water\nsquirrel, forest\nhedgehog, forest\nwhale, water\nfox,"
 #context = 'Deeper neural networks are more difficult to train. We present a residual learning framework to ease the training of networks that are substantially deeper than those used previously. We explicitly reformulate the layers as learning residual functions with reference to the layer inputs, instead of learning unreferenced functions. We provide comprehensive empirical evidence showing that these residual networks are easier to optimize, and can gain accuracy from considerably increased depth. '
 #context = " "
-NUM_TRIALS = 999
-LENGTH_PER_TRIAL = 100
+context = "A dragon lies in the wastes of the northen land in front of his den."
+NUM_TRIALS = 5
+LENGTH_PER_TRIAL = 200
 
-TEMPERATURE = 1.0
-top_p = 0.7
+TEMPERATURE = 0.1
+top_p = 0.9
 top_p_newline = 0.9 # only used in TOKEN_MODE = char
 
 DEBUG_DEBUG = False  # True False --> show softmax output
