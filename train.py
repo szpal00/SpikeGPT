@@ -21,7 +21,7 @@ torch.backends.cuda.matmul.allow_tf32 = True
 
 ### Step 1: set training data ##########################################################################
 
-datafile_train = "../drive/MyDrive/enwik8"
+datafile_train = "../drive/MyDrive/pile150k.json"
 datafile_valid = "valid.txt"
 datafile_test = "test.txt"
 datafile_encoding = 'utf-8'
